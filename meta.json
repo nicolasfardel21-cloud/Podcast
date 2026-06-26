@@ -16,6 +16,11 @@
   "actualites": [
     {
       "image": "actualites/image1.png",
+      "titre": "Nouveau site",
+      "lien": "https://nicolasfardel21-cloud.github.io/Podcast-J33/"
+    }
+    {
+      "image": "actualites/image2.png",
       "titre": "Miettes d'histoire",
       "lien": "Miettes d'histoire"
     }
