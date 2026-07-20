@@ -149,18 +149,18 @@ main{padding:52px 28px 100px;max-width:1500px;margin:0 auto}
 .lec-progres:hover .lec-rond{transform:translate(-50%,-50%) scale(1.25)}
 .lecteur-controles{display:flex;align-items:center;gap:10px;flex:none}
 .lc-btn{background:none;border:none;cursor:pointer;color:#F3EFE4;display:flex;align-items:center;justify-content:center;padding:6px;transition:color .2s}
-.lc-btn:hover{color:var(--or)}
 .lc-btn:focus{outline:none}
 .lc-btn:focus:not(:focus-visible){color:inherit}
+@media(hover:hover){.lc-btn:hover{color:var(--or)}}
 .lc-btn.grand{width:44px;height:44px;border-radius:50%;border:1px solid rgba(243,239,228,.2);transition:border-color .2s}
-.lc-btn.grand:hover{border-color:var(--or)}
+@media(hover:hover){.lc-btn.grand:hover{border-color:var(--or)}}
 .lc-skip{position:relative;display:flex;align-items:flex-end;gap:2px}
 .skip-label{font-size:.6rem;font-weight:700;font-family:'Archivo',sans-serif;line-height:1;color:rgba(243,239,228,.7);padding-bottom:1px}
 .skip-label-left{order:-1}
 .skip-label-right{order:1}
 .lecteur-loupe{flex:none}
 .lecteur-fermer{background:none;border:none;cursor:pointer;color:rgba(243,239,228,.5);transition:color .2s;padding:6px;flex:none}
-.lecteur-fermer:hover{color:#F3EFE4}
+@media(hover:hover){.lecteur-fermer:hover{color:#F3EFE4}}
 @media(max-width:680px){
   .lecteur-compact{flex-wrap:wrap;gap:0;padding:10px 16px 12px;position:relative}
   .lecteur-barre{order:3;width:100%;flex:none;margin-top:8px}
@@ -192,7 +192,7 @@ body.lecteur-actif{padding-bottom:90px}
 .lecteur-etendu.actif .le-panneau{transform:none}
 .le-reduire-wrap{position:sticky;top:0;z-index:5;background:var(--noir);padding:14px 0 8px;text-align:center}
 .le-reduire{background:none;border:none;cursor:pointer;color:rgba(243,239,228,.6);padding:8px 24px;transition:color .2s;display:inline-block}
-.le-reduire:hover{color:var(--or)}
+@media(hover:hover){.le-reduire:hover{color:var(--or)}}
 .le-haut{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;padding-bottom:32px;border-bottom:1px solid rgba(243,239,228,.12)}
 .le-cover{width:200px;height:200px;border-radius:10px;overflow:hidden;flex:none;background:rgba(243,239,228,.08)}
 .le-cover img{width:100%;height:100%;object-fit:cover}
