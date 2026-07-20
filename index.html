@@ -152,6 +152,10 @@ main{padding:52px 28px 100px;max-width:1500px;margin:0 auto}
 .lc-btn:hover{color:var(--or)}
 .lc-btn.grand{width:44px;height:44px;border-radius:50%;border:1px solid rgba(243,239,228,.2);transition:border-color .2s}
 .lc-btn.grand:hover{border-color:var(--or)}
+.lc-skip{position:relative;display:flex;align-items:flex-end;gap:2px}
+.skip-label{font-size:.6rem;font-weight:700;font-family:'Archivo',sans-serif;line-height:1;color:rgba(243,239,228,.7);padding-bottom:1px}
+.skip-label-left{order:-1}
+.skip-label-right{order:1}
 .lecteur-loupe{flex:none}
 .lecteur-fermer{background:none;border:none;cursor:pointer;color:rgba(243,239,228,.5);transition:color .2s;padding:6px;flex:none}
 .lecteur-fermer:hover{color:#F3EFE4}
@@ -338,23 +342,23 @@ footer{padding:60px 28px 40px;max-width:1500px;margin:0 auto;border-top:1px soli
       <button class="lc-btn" onclick="pistePrec()" aria-label="Piste précédente">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><rect x="5" y="4" width="2" height="16"/></svg>
       </button>
-      <button class="lc-btn" onclick="sauter(-15)" aria-label="Reculer 15s" title="−15s">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+      <button class="lc-btn lc-skip" onclick="sauter(-15)" aria-label="Reculer 15s">
+        <span class="skip-label skip-label-left">-15</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
           <polygon points="12 4 4 12 12 20 12 4"/>
           <polygon points="20 4 12 12 20 20 20 4"/>
-          <text x="12" y="26" font-size="5" text-anchor="middle" font-family="Arial" font-weight="bold">-15</text>
         </svg>
       </button>
       <button class="lc-btn grand" onclick="basculerLecture()" aria-label="Lecture/Pause">
         <svg id="icoPlay" width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         <svg id="icoPause" width="17" height="17" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
       </button>
-      <button class="lc-btn" onclick="sauter(15)" aria-label="Avancer 15s" title="+15s">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+      <button class="lc-btn lc-skip" onclick="sauter(15)" aria-label="Avancer 15s">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
           <polygon points="4 4 12 12 4 20 4 4"/>
           <polygon points="12 4 20 12 12 20 12 4"/>
-          <text x="12" y="26" font-size="5" text-anchor="middle" font-family="Arial" font-weight="bold">+15</text>
         </svg>
+        <span class="skip-label skip-label-right">+15</span>
       </button>
       <button class="lc-btn" onclick="pisteSuiv()" aria-label="Piste suivante">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><rect x="17" y="4" width="2" height="16"/></svg>
@@ -422,23 +426,23 @@ footer{padding:60px 28px 40px;max-width:1500px;margin:0 auto;border-top:1px soli
           <button class="lc-btn" onclick="pistePrec()" aria-label="Piste précédente">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><rect x="5" y="4" width="2" height="16"/></svg>
           </button>
-          <button class="lc-btn" onclick="sauter(-15)" aria-label="Reculer 15s" title="−15s">
-            <svg width="26" height="26" viewBox="0 0 24 28" fill="currentColor">
-              <polygon points="12 2 4 10 12 18 12 2"/>
-              <polygon points="20 2 12 10 20 18 20 2"/>
-              <text x="12" y="26" font-size="5.5" text-anchor="middle" font-family="Arial" font-weight="bold">-15</text>
+          <button class="lc-btn lc-skip" onclick="sauter(-15)" aria-label="Reculer 15s">
+            <span class="skip-label skip-label-left">-15</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="12 4 4 12 12 20 12 4"/>
+              <polygon points="20 4 12 12 20 20 20 4"/>
             </svg>
           </button>
           <button class="lc-btn grand le-play" onclick="basculerLecture()" aria-label="Lecture/Pause">
             <svg id="leIcoPlay" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             <svg id="leIcoPause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
           </button>
-          <button class="lc-btn" onclick="sauter(15)" aria-label="Avancer 15s" title="+15s">
-            <svg width="26" height="26" viewBox="0 0 24 28" fill="currentColor">
-              <polygon points="4 2 12 10 4 18 4 2"/>
-              <polygon points="12 2 20 10 12 18 12 2"/>
-              <text x="12" y="26" font-size="5.5" text-anchor="middle" font-family="Arial" font-weight="bold">+15</text>
+          <button class="lc-btn lc-skip" onclick="sauter(15)" aria-label="Avancer 15s">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="4 4 12 12 4 20 4 4"/>
+              <polygon points="12 4 20 12 12 20 12 4"/>
             </svg>
+            <span class="skip-label skip-label-right">+15</span>
           </button>
           <button class="lc-btn" onclick="pisteSuiv()" aria-label="Piste suivante">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><rect x="17" y="4" width="2" height="16"/></svg>
