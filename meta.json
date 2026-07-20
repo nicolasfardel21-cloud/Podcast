@@ -35,12 +35,12 @@
   ],
   "actualites": [
     {
-      "image": "actualites/image1.png",
+      "image": "actualites/image1.jpg",
       "titre": "",
       "lien": ""
     },
     {
-      "image": "actualites/image2.png",
+      "image": "actualites/image2.jpg",
       "titre": "",
       "lien": "Miettes d'histoire"
     }
