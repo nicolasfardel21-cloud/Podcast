@@ -150,6 +150,8 @@ main{padding:52px 28px 100px;max-width:1500px;margin:0 auto}
 .lecteur-controles{display:flex;align-items:center;gap:10px;flex:none}
 .lc-btn{background:none;border:none;cursor:pointer;color:#F3EFE4;display:flex;align-items:center;justify-content:center;padding:6px;transition:color .2s}
 .lc-btn:hover{color:var(--or)}
+.lc-btn:focus{outline:none}
+.lc-btn:focus:not(:focus-visible){color:inherit}
 .lc-btn.grand{width:44px;height:44px;border-radius:50%;border:1px solid rgba(243,239,228,.2);transition:border-color .2s}
 .lc-btn.grand:hover{border-color:var(--or)}
 .lc-skip{position:relative;display:flex;align-items:flex-end;gap:2px}
@@ -1221,6 +1223,12 @@ function checkReveal() {
 }
 window.addEventListener('scroll', checkReveal, {passive:true});
 setTimeout(checkReveal, 80);
+
+/* Retire le focus immédiatement après clic pour éviter la couleur dorée figée sur mobile */
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.lc-btn, .lecteur-fermer, .le-reduire');
+  if (btn) btn.blur();
+});
 
 /* ══════════════════════════════════
    LANCEMENT
