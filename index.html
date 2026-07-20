@@ -156,15 +156,26 @@ main{padding:52px 28px 100px;max-width:1500px;margin:0 auto}
 .lecteur-fermer{background:none;border:none;cursor:pointer;color:rgba(243,239,228,.5);transition:color .2s;padding:6px;flex:none}
 .lecteur-fermer:hover{color:#F3EFE4}
 @media(max-width:680px){
-  .lecteur-compact{flex-wrap:wrap;gap:8px;padding:12px 16px}
+  .lecteur-compact{flex-wrap:wrap;gap:8px;padding:10px 16px 12px}
   .lecteur-barre{order:3;width:100%;flex:none}
-  .lecteur-info{order:1;flex:1}
+  .lecteur-info{display:none}
   .lecteur-controles{order:2}
   .lecteur-loupe,.lecteur-fermer{order:2}
 }
+/* BANDEAU MOBILE : vignette + titre + description */
+.lecteur-mobile-top{display:none}
+@media(max-width:680px){
+  .lecteur-mobile-top{display:flex;align-items:center;gap:14px;padding:14px 16px 10px;border-bottom:1px solid rgba(243,239,228,.1);cursor:pointer}
+  .lmt-cover{width:52px;height:52px;border-radius:6px;overflow:hidden;flex:none;background:rgba(243,239,228,.08)}
+  .lmt-cover img{width:100%;height:100%;object-fit:cover}
+  .lmt-texte{flex:1;min-width:0}
+  .lmt-titre{font-family:'Anton',sans-serif;font-size:1rem;text-transform:uppercase;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--creme,#F3EFE4)}
+  .lmt-desc{font-size:.72rem;color:rgba(243,239,228,.55);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lmt-chevron{flex:none;color:rgba(243,239,228,.4)}
+}
 /* footer visible quand le lecteur est actif */
 body.lecteur-actif{padding-bottom:90px}
-@media(max-width:680px){body.lecteur-actif{padding-bottom:130px}}
+@media(max-width:680px){body.lecteur-actif{padding-bottom:210px}}
 
 /* ─── LECTEUR ÉTENDU ─── */
 .lecteur-etendu{position:fixed;inset:0;z-index:300;visibility:hidden;opacity:0;transition:opacity .35s ease,visibility .35s ease}
@@ -301,6 +312,15 @@ footer{padding:60px 28px 40px;max-width:1500px;margin:0 auto;border-top:1px soli
 
 <!-- LECTEUR -->
 <div class="lecteur" id="lecteur" role="region" aria-label="Lecteur audio">
+  <!-- bandeau mobile : vignette + titre + description -->
+  <div class="lecteur-mobile-top" onclick="ouvrirLecteurEtendu()">
+    <div class="lmt-cover" id="lmtCover"></div>
+    <div class="lmt-texte">
+      <div class="lmt-titre" id="lmtTitre">—</div>
+      <div class="lmt-desc" id="lmtDesc"></div>
+    </div>
+    <svg class="lmt-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+  </div>
   <!-- barre compacte -->
   <div class="lecteur-compact">
     <div class="lecteur-info" onclick="ouvrirLecteurEtendu()" style="cursor:pointer">
@@ -843,6 +863,13 @@ function lancer(index) {
   document.getElementById('lecSerie').textContent = ep.serie;
   document.getElementById('leTitre').textContent  = titre;
   document.getElementById('leSerie').textContent  = ep.serie;
+  /* Bandeau mobile */
+  document.getElementById('lmtTitre').textContent = ep.titre;
+  document.getElementById('lmtDesc').textContent  = ep.desc || ep.serie;
+  const lmtCover = document.getElementById('lmtCover');
+  lmtCover.innerHTML = window._coverSerieActive
+    ? `<img src="${window._coverSerieActive}" alt="${ep.serie}" onerror="this.remove()">`
+    : '';
   document.getElementById('lecteur').classList.add('actif');
   document.body.classList.add('lecteur-actif');
 
