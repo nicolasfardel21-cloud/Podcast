@@ -2,7 +2,9 @@
   "sections": [
     {
       "titre": "Podcasts",
-      "dossiers": ["Miettes d'histoire"]
+      "dossiers": [
+        "Miettes d'histoire"
+      ]
     },
     {
       "titre": "Prêches",
@@ -30,30 +32,30 @@
           "url": "Miettes d'histoire/Miettes d'histoire - E2 - Luther.mp3",
           "disponible": "2026-07-27"
         },
-         "Miettes d'histoire - 03 - Calvin.mp3": {
+        "Miettes d'histoire - 03 - Calvin.mp3": {
           "titre": "Calvin : une révélation théologique",
           "description": "Si Luther a allumé l'étincelle, Jean Calvin va structurer la pensée réformée en francophonie. Analyse d'une théologie qui va marquer profondément la Bourgogne.",
           "url": "Miettes d'histoire/Miettes d'histoire - E3 - Calvin.mp3",
           "disponible": "2026-07-28"
         },
-          "Miettes d'histoire - 04 - Suisse.mp3": {
+        "Miettes d'histoire - 04 - Suisse.mp3": {
           "titre": "Les racines protestantes... l'influence suisse",
           "description": "De Genève à Neuchâtel, la Suisse est devenue le refuge et le moteur de la Réforme francophone. Comment ce souffle venu des Alpes a-t-il traversé les frontières jusqu'à nous ?",
           "url": "Miettes d'histoire/Miettes d'histoire - E4 - Suisse.mp3",
           "disponible": "2026-07-29"
         },
-          "Miettes d'histoire - 05 - Parlement.mp3": {
+        "Miettes d'histoire - 05 - Parlement.mp3": {
           "titre": "Le rôle et l'implication du Parlement de Dijon",
           "description": "Entre fidélité au Roi de France et gestion du culte réformé, comment la justice bourguignonne a-t-elle réagi face à la montée du protestantisme régional ?",
           "url": "Miettes d'histoire/Miettes d'histoire - E5 - Parlement.mp3",
           "disponible": "2026-07-30"
         },
-          "Miettes d'histoire - 06 - Climat.mp3": {
+        "Miettes d'histoire - 06 - Climat.mp3": {
           "titre": "Le climat religieux en 1570",
           "description": "Alors que la France s'embrase dans les Guerres de Religion, quelle est l'atmosphère dans les rues et les campagnes du Pays d'Is à l'aube des massacres ?",
           "url": "Miettes d'histoire/Miettes d'histoire - E6 - Climat.mp3",
           "disponible": "2026-07-31"
-        },
+        }
       }
     }
   ],
