@@ -127,7 +127,10 @@ main{padding:52px 28px 100px;max-width:1500px;margin:0 auto}
 .episode:hover .ep-num,.episode.actif .ep-num{color:var(--or)}
 .ep-corps{min-width:0}
 .ep-titre{font-family:'Anton',sans-serif;font-weight:400;font-size:clamp(1rem,2vw,1.5rem);line-height:1.1;text-transform:uppercase;margin-bottom:4px}
-.ep-desc{font-size:.85rem;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ep-desc{font-size:.85rem;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:white-space .2s}
+.ep-desc.ouvert{white-space:normal;overflow:visible;text-overflow:unset}
+.ep-lire-plus{font-size:.75rem;color:var(--or);cursor:pointer;border:none;background:none;padding:4px 0 0;font-family:'Archivo',sans-serif;display:block;text-decoration:underline;text-underline-offset:2px}
+@media(hover:hover){.ep-lire-plus:hover{opacity:.8}}
 .btn-play{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;border:1px solid var(--ligne);background:var(--fond);transition:border-color .25s,background .25s;flex:none}
 .btn-play svg{width:14px;height:14px;fill:var(--encre);transition:fill .25s;margin-left:2px}
 .episode:hover .btn-play,.episode.actif .btn-play{border-color:var(--or);background:var(--or)}
@@ -247,7 +250,7 @@ footer{padding:60px 28px 40px;max-width:1500px;margin:0 auto;border-top:1px soli
 <body>
 
 <header class="site-header">
-  <span class="marque">J33</span>
+  <span class="marque" onclick="retourAccueil()" style="cursor:pointer" title="Accueil">J33</span>
 </header>
 
 <!-- HERO -->
@@ -864,12 +867,24 @@ function renderEpisodes() {
       <div class="ep-num">${String(i+1).padStart(2,'0')}</div>
       <div class="ep-corps">
         <div class="ep-titre">${ep.titre}</div>
-        ${ep.desc ? `<div class="ep-desc">${ep.desc}</div>` : ''}
+        ${ep.desc ? `
+        <div class="ep-desc" id="desc-${i}">${ep.desc}</div>
+        <button class="ep-lire-plus" id="lp-${i}"
+          onclick="event.stopPropagation();toggleDesc(${i})">Lire plus</button>
+        ` : ''}
       </div>
       <div class="btn-play" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       </div>
     </div>`).join('');
+}
+
+function toggleDesc(i) {
+  const desc = document.getElementById('desc-' + i);
+  const btn  = document.getElementById('lp-' + i);
+  if (!desc) return;
+  const ouvert = desc.classList.toggle('ouvert');
+  btn.textContent = ouvert ? 'Réduire' : 'Lire plus';
 }
 
 /* ══════════════════════════════════
