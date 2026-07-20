@@ -793,7 +793,7 @@ function afficherEpisodes(chemin, nom) {
     })
     .map(([fichier, em], i) => ({
       index: i, fichier,
-      url: em.url || '',
+      url: em.url ? (em.url.startsWith('http') ? em.url : new URL(em.url, window.location.href).href) : '',
       titre: em.titre || fichier.replace(/\.mp3$/i,'').replace(/^[\d\s.\-_]+/,'').replace(/[-_]/g,' ').trim() || `Épisode ${i+1}`,
       desc: em.description || '',
       serie: titreSerie
