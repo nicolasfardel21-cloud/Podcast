@@ -118,6 +118,26 @@ main{padding:52px 28px 100px;max-width:1500px;margin:0 auto}
 .serie-episodes-header{display:flex;justify-content:space-between;align-items:baseline;padding:32px 0 0;border-top:1px solid var(--ligne);margin-top:32px}
 .serie-episodes-header h3{font-family:'Anton',sans-serif;font-weight:400;font-size:clamp(1.2rem,2.5vw,2rem);text-transform:uppercase}
 
+/* ─── VUE RESSOURCE (cartes, outils…) ─── */
+.vue-ressource{display:none}
+.vue-ressource.active{display:block}
+.ress-grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:3px;margin-top:20px}
+@media(max-width:640px){.ress-grille{grid-template-columns:repeat(2,1fr);gap:2px}}
+@media(max-width:380px){.ress-grille{grid-template-columns:1fr}}
+
+/* ─── VISIONNEUSE (page externe en plein écran) ─── */
+.visionneuse{position:fixed;inset:0;z-index:400;background:var(--noir);display:none;flex-direction:column}
+.visionneuse.actif{display:flex}
+.vis-barre{flex:none;display:flex;align-items:center;gap:16px;padding:10px 16px;background:var(--noir);border-bottom:1px solid rgba(243,239,228,.12);color:var(--creme,#F3EFE4)}
+.vis-retour{background:none;border:1px solid rgba(243,239,228,.25);border-radius:40px;cursor:pointer;color:inherit;font-family:'Archivo',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;padding:8px 16px;display:flex;align-items:center;gap:8px;transition:border-color .2s,color .2s}
+@media(hover:hover){.vis-retour:hover{border-color:var(--or);color:var(--or)}}
+.vis-titre{flex:1;min-width:0;font-family:'Anton',sans-serif;font-size:.95rem;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vis-plein{flex:none;font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;color:rgba(243,239,228,.55);text-decoration:none;transition:color .2s}
+@media(hover:hover){.vis-plein:hover{color:var(--or)}}
+.vis-frame{flex:1;width:100%;border:0;display:block;background:var(--noir)}
+body.visionneuse-active{overflow:hidden}
+@media(max-width:560px){.vis-titre{font-size:.8rem}.vis-plein{display:none}}
+
 /* ─── LISTE ÉPISODES ─── */
 .episode{display:grid;grid-template-columns:52px 1fr 44px;gap:0 20px;align-items:center;padding:24px 0;border-bottom:1px solid var(--ligne);cursor:pointer;position:relative;transition:padding-left .3s}
 .episode::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--or);transition:width .3s}
@@ -310,6 +330,18 @@ footer{padding:60px 28px 40px;max-width:1500px;margin:0 auto;border-top:1px soli
     </div>
     <div id="listeEpisodes"></div>
   </div>
+
+  <!-- VUE RESSOURCE -->
+  <div class="vue-ressource" id="vueRessource">
+    <div class="serie-hero" id="ressHero" style="display:none">
+      <img id="ressHeroImg" src="" alt="" onerror="document.getElementById('ressHero').style.display='none'">
+    </div>
+    <p class="serie-desc-bas" id="ressDescBas"></p>
+    <div class="serie-episodes-header">
+      <h3 id="ressSousTitre">Cartes</h3>
+    </div>
+    <div class="ress-grille" id="ressGrille"></div>
+  </div>
 </main>
 
 <div class="verset-geant">
@@ -324,6 +356,19 @@ footer{padding:60px 28px 40px;max-width:1500px;margin:0 auto;border-top:1px soli
     <span>« Fais appel à moi et je te répondrai » — Jérémie 33:3</span>
   </div>
 </footer>
+
+<!-- VISIONNEUSE PLEIN ÉCRAN (cartes / ressources) -->
+<div class="visionneuse" id="visionneuse" aria-hidden="true">
+  <div class="vis-barre">
+    <button class="vis-retour" onclick="fermerCarte()" aria-label="Retour">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour
+    </button>
+    <span class="vis-titre" id="visTitre">—</span>
+    <a class="vis-plein" id="visLien" href="#" target="_blank" rel="noopener">Ouvrir en plein écran ↗</a>
+  </div>
+  <iframe class="vis-frame" id="visFrame" src="about:blank" title="Ressource" allowfullscreen></iframe>
+</div>
 
 <!-- LECTEUR -->
 <div class="lecteur" id="lecteur" role="region" aria-label="Lecteur audio">
@@ -486,6 +531,15 @@ function urlImage(chemin) {
   return './' + chemin.split('/').map(encodeURIComponent).join('/');
 }
 
+/* Idem pour un fichier quelconque (page HTML, PDF…) : garde les URL absolues. */
+function urlFichier(chemin) {
+  if (!chemin) return '';
+  return /^https?:\/\//i.test(chemin) ? chemin : urlImage(chemin);
+}
+
+/* Dossiers du dépôt qui ne doivent jamais apparaître dans la navigation */
+const DOSSIERS_CACHES = ['actualites', 'ressources'];
+
 /* ══════════════════════════════════
    ÉTAT
 ══════════════════════════════════ */
@@ -630,18 +684,27 @@ function naviguerDossier(chemin, nom) {
     cw.style.display = (chemin === '') ? '' : 'none';
   }
 
+  /* Ressource virtuelle (définie dans meta.json, pas dans l'arbre du dépôt) */
+  if (chemin.startsWith(PREFIXE_RESSOURCE)) {
+    afficherRessource(chemin.slice(PREFIXE_RESSOURCE.length));
+    return;
+  }
+
   const profondeur = chemin ? chemin.split('/').length : 0;
   const enfants = arbre.filter(item => {
     if (chemin === '') return !item.path.includes('/');
     return item.path.startsWith(chemin + '/') && item.path.split('/').length === profondeur + 1;
   });
 
-  /* Exclure le dossier "actualites" de la navigation (réservé au carrousel) */
+  /* Exclure les dossiers techniques (actualites, ressources) de la navigation */
   const dossiers = enfants.filter(i =>
-    i.type === 'tree' && i.path.toLowerCase() !== 'actualites'
+    i.type === 'tree' && !DOSSIERS_CACHES.includes(i.path.toLowerCase())
   );
 
-  if (dossiers.length > 0) {
+  /* À l'accueil, les ressources s'affichent même s'il n'y a aucun dossier réel */
+  const aDesRessources = (chemin === '') && listeRessources().length > 0;
+
+  if (dossiers.length > 0 || aDesRessources) {
     afficherGrille(chemin, dossiers);
   } else {
     afficherEpisodes(chemin, nom || chemin.split('/').pop());
@@ -671,6 +734,32 @@ function naviguerVers(idx) {
 /* ══════════════════════════════════
    GRILLE (avec sections)
 ══════════════════════════════════ */
+const PREFIXE_RESSOURCE = 'ressource:';
+
+function listeRessources() {
+  return Array.isArray(meta.ressources) ? meta.ressources : [];
+}
+
+function idRessource(r) { return r.dossier || r.titre || ''; }
+
+function trouverRessource(id) {
+  return listeRessources().find(r => idRessource(r) === id) || null;
+}
+
+/* Transforme une ressource de meta.json en "pseudo-dossier" affichable dans la grille */
+function infosRessource(r) {
+  const cartes = r.cartes || r.items || [];
+  const coverUrl = r.image ? urlImage(r.image) : '';
+  return {
+    chemin: PREFIXE_RESSOURCE + idRessource(r),
+    nom: idRessource(r),
+    meta: { titre: r.titre || idRessource(r), description: r.description || '' },
+    nb: cartes.length,
+    coverUrl,
+    type: 'ressource'
+  };
+}
+
 function infosDossier(chemin) {
   const nom = chemin.split('/').pop();
   const m = trouverMeta(chemin);
@@ -699,7 +788,9 @@ function htmlTuile(d, idx) {
   const desc   = d.meta.description || '';
   const label  = d.type === 'dossier'
     ? `${d.nb} série${d.nb !== 1 ? 's' : ''}`
-    : `${d.nb} épisode${d.nb !== 1 ? 's' : ''}`;
+    : d.type === 'ressource'
+      ? `${d.nb} carte${d.nb !== 1 ? 's' : ''}`
+      : `${d.nb} épisode${d.nb !== 1 ? 's' : ''}`;
   return `
   <div class="tuile" data-idx="${idx}" onclick="gererClicTuile(this)"
        role="button" tabindex="0" aria-label="Ouvrir ${nomAff}"
@@ -725,10 +816,16 @@ function htmlTuile(d, idx) {
 
 function afficherGrille(cheminParent, dossiers) {
   document.getElementById('vueEpisodes').classList.remove('active');
+  document.getElementById('vueRessource').classList.remove('active');
   document.getElementById('vueGrille').style.display = '';
 
   const grille = document.getElementById('grille');
   const tousDossiers = dossiers.map(d => infosDossier(d.path));
+
+  /* Ressources (meta.json) : uniquement à l'accueil */
+  if (cheminParent === '') {
+    listeRessources().forEach(r => tousDossiers.push(infosRessource(r)));
+  }
   window._dossiersCourants = tousDossiers;
 
   /* Index rapide par nom de dossier */
@@ -817,6 +914,7 @@ function afficherEpisodes(chemin, nom) {
   const descSerie  = m.description || '';
 
   document.getElementById('vueGrille').style.display = 'none';
+  document.getElementById('vueRessource').classList.remove('active');
   document.getElementById('vueEpisodes').classList.add('active');
 
   /* Grande image */
@@ -894,6 +992,106 @@ function toggleDesc(i) {
   const ouvert = desc.classList.toggle('ouvert');
   btn.textContent = ouvert ? 'Réduire' : 'Lire plus';
 }
+
+/* ══════════════════════════════════
+   RESSOURCES (cartes, pages interactives…)
+══════════════════════════════════ */
+function afficherRessource(id) {
+  const r = trouverRessource(id);
+  if (!r) { afficherErreur(`Ressource introuvable : ${id}`); return; }
+
+  document.getElementById('vueGrille').style.display = 'none';
+  document.getElementById('vueEpisodes').classList.remove('active');
+  document.getElementById('vueRessource').classList.add('active');
+
+  /* Grande image (facultative) */
+  const hero = document.getElementById('ressHero');
+  if (r.image) {
+    document.getElementById('ressHeroImg').src = urlImage(r.image);
+    hero.style.display = '';
+  } else {
+    hero.style.display = 'none';
+  }
+
+  document.getElementById('ressDescBas').textContent = r.description || '';
+  document.getElementById('ressSousTitre').textContent = r.sous_titre || 'Cartes';
+
+  const cartes = r.cartes || r.items || [];
+  window._cartesCourantes = cartes;
+
+  const grille = document.getElementById('ressGrille');
+  if (cartes.length === 0) {
+    grille.innerHTML = `
+      <div class="etat-message" style="grid-column:1/-1">
+        <span class="icone">🗺</span>
+        <h3>Aucune carte</h3>
+        <p>Ajoute des cartes dans <code>meta.json</code> pour cette ressource.</p>
+      </div>`;
+  } else {
+    grille.innerHTML = cartes.map((c, i) => htmlTuileCarte(c, i)).join('');
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function htmlTuileCarte(c, i) {
+  const nom  = c.titre || `Carte ${i + 1}`;
+  const desc = c.description || '';
+  const img  = c.image ? urlImage(c.image) : '';
+  return `
+  <div class="tuile" onclick="ouvrirCarte(${i})"
+       role="button" tabindex="0" aria-label="Ouvrir ${nom}"
+       onkeydown="if(event.key==='Enter')ouvrirCarte(${i})">
+    <div class="tuile-placeholder">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <polygon points="1 6 8 3 16 6 23 3 23 18 16 21 8 18 1 21 1 6"/>
+        <line x1="8" y1="3" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="21"/>
+      </svg>
+    </div>
+    ${img ? `<img class="tuile-cover" src="${img}" alt="${nom}" loading="lazy" onerror="this.style.display='none'">` : ''}
+    <div class="tuile-fond"></div>
+    <div class="tuile-bas"><div class="tuile-nom">${nom}</div></div>
+    <div class="tuile-info">
+      <div class="tuile-info-nom">${nom}</div>
+      ${desc ? `<div class="tuile-info-desc">${desc}</div>` : ''}
+      <div class="tuile-info-count">${c.etiquette || 'Carte interactive'}</div>
+    </div>
+    <div class="tuile-fleche" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </div>
+  </div>`;
+}
+
+/* ── Visionneuse plein écran ── */
+function ouvrirCarte(i) {
+  const c = (window._cartesCourantes || [])[i];
+  if (!c || !c.url) return;
+  const url = urlFichier(c.url);
+  const frame = document.getElementById('visFrame');
+  document.getElementById('visTitre').textContent = c.titre || '';
+  document.getElementById('visLien').href = url;
+  frame.title = c.titre || 'Ressource';
+  frame.src = url;
+  const v = document.getElementById('visionneuse');
+  v.classList.add('actif');
+  v.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('visionneuse-active');
+}
+
+function fermerCarte() {
+  const v = document.getElementById('visionneuse');
+  if (!v.classList.contains('actif')) return;
+  v.classList.remove('actif');
+  v.setAttribute('aria-hidden', 'true');
+  document.getElementById('visFrame').src = 'about:blank';
+  document.body.classList.remove('visionneuse-active');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (document.getElementById('visionneuse').classList.contains('actif')) { fermerCarte(); return; }
+  if (document.getElementById('lecteurEtendu').classList.contains('actif')) fermerLecteurEtendu();
+});
 
 /* ══════════════════════════════════
    LECTEUR
@@ -1227,6 +1425,7 @@ function appliquerMetaPage() {
 ══════════════════════════════════ */
 function afficherChargement() {
   document.getElementById('vueEpisodes').classList.remove('active');
+  document.getElementById('vueRessource').classList.remove('active');
   document.getElementById('vueGrille').style.display='';
   const g = document.getElementById('grille');
   g.className = 'grille';
