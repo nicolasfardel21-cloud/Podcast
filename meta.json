@@ -7,6 +7,12 @@
       ]
     },
     {
+      "titre": "Ressources",
+      "dossiers": [
+        "La bible par les cartes"
+      ]
+    },
+    {
       "titre": "Prêches",
       "dossiers": []
     },
@@ -56,7 +62,7 @@
           "url": "Miettes d'histoire/Miettes d'histoire - E6 - Climat.mp3",
           "disponible": "2026-08-07"
         },
-          "Miettes d'histoire - E7 - Période sombre.mp3": {
+        "Miettes d'histoire - E7 - Période sombre.mp3": {
           "titre": "La période sombre",
           "description": "En pleines guerres de religion, une surprise attend Dijon ! Découvrez comment le gouverneur Chabot-Charny a sauvé les protestants locaux du massacre de la Saint-Barthélemy, avant que les tensions et l'exil ne reprennent de plus belle.",
           "url": "Miettes d'histoire/Miettes d'histoire - E7 - Période sombre.mp3",
@@ -147,6 +153,22 @@
           "disponible": "2026-08-28"
         }
       }
+    }
+  ],
+  "ressources": [
+    {
+      "dossier": "La bible par les cartes",
+      "titre": "La bible par les cartes",
+      "description": "Des cartes interactives pour suivre les grands déplacements du récit biblique.",
+      "sous_titre": "Cartes",
+      "cartes": [
+        {
+          "titre": "Les voyages de Paul",
+          "description": "Les quatre voyages de l'apôtre Paul, d'après les Actes des Apôtres et les épîtres (env. 46–67 apr. J.-C.).",
+          "etiquette": "Carte animée",
+          "url": "Ressources/voyages-paul.html"
+        }
+      ]
     }
   ],
   "actualites": [
