@@ -554,20 +554,52 @@ const isTouchDevice = () => window.matchMedia('(hover:none)').matches;
 /* ══════════════════════════════════
    INIT
 ══════════════════════════════════ */
+/* meta.json : on essaie d'abord le fichier local (à côté d'index.html), puis
+   le dépôt distant. Ainsi une modification locale est prise en compte
+   immédiatement, et sur GitHub Pages on évite le cache du CDN raw. */
+async function chargerMeta() {
+  const sources = ['./meta.json', `${RAW_BASE}/meta.json`];
+  for (const src of sources) {
+    let r;
+    try { r = await fetch(src, { cache: 'no-store' }); }
+    catch (_) { continue; }          /* fichier absent / hors ligne → source suivante */
+    if (!r.ok) continue;
+
+    const texte = await r.text();
+    try {
+      meta = JSON.parse(texte);
+    } catch (e) {
+      /* Le fichier existe mais il est mal écrit : on le dit au lieu de
+         retomber silencieusement sur une autre version. */
+      throw new Error(`meta.json est mal formé — ${e.message}`);
+    }
+    appliquerMetaPage();
+    return true;
+  }
+  console.warn('Aucun meta.json accessible (ni local, ni distant).');
+  return false;
+}
+
 async function init() {
   afficherChargement();
   try {
-    /* 1. meta.json via raw (0 appel API) */
-    try {
-      const r = await fetch(`${RAW_BASE}/meta.json`);
-      if (r.ok) { meta = await r.json(); appliquerMetaPage(); }
-    } catch(_) {}
+    /* 1. meta.json (local, sinon distant) */
+    await chargerMeta();
 
     /* 2. Arbre complet — 1 seul appel API */
-    const r = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1`);
-    if (!r.ok) throw new Error(`Erreur GitHub ${r.status} — vérifie que le repo est public.`);
-    const data = await r.json();
-    arbre = data.tree || [];
+    let arbreOk = true;
+    try {
+      const r = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1`);
+      if (!r.ok) throw new Error(`Erreur GitHub ${r.status} — vérifie que le repo est public.`);
+      const data = await r.json();
+      arbre = data.tree || [];
+    } catch (e) {
+      /* Sans réseau (ou hors dépôt), on affiche quand même les ressources de meta.json */
+      arbre = [];
+      arbreOk = false;
+      if (listeRessources().length === 0) throw e;
+      console.warn('Arbre GitHub indisponible :', e.message);
+    }
 
     /* 3. Carrousel actualités */
     initCarrousel();
