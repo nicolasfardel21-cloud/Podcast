@@ -160,12 +160,14 @@
       "dossier": "La bible par les cartes",
       "titre": "La bible par les cartes",
       "description": "Des cartes interactives pour suivre les grands déplacements du récit biblique.",
+      "image": "ressources/covers/bible-cartes.jpg",
       "sous_titre": "Cartes",
       "cartes": [
         {
           "titre": "Les voyages de Paul",
           "description": "Les quatre voyages de l'apôtre Paul, d'après les Actes des Apôtres et les épîtres (env. 46–67 apr. J.-C.).",
           "etiquette": "Carte animée",
+          "image": "ressources/covers/voyages-paul.jpg",
           "url": "Ressources/voyages-paul.html"
         }
       ]
